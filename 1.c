@@ -17,5 +17,6 @@ int main(int argc, const char *argv[])
 {
 	printf("hello world\n");
 	printf("update\n");
+	printf("develop\n");
     return 0;
 }
