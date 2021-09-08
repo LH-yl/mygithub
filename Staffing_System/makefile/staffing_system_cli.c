@@ -896,6 +896,7 @@ int do_change(int sfd)
 {
 	//向服务器发送员工修改个人信息的协议'C'
 	char buf[N] = "C";
+	char buf1[N] = "";
 	int res = 0;
 	char choice;
     USER user;
@@ -1083,10 +1084,23 @@ int do_change(int sfd)
 			printf("新的密码>>>");
 			scanf("%s",buf);
 			while(getchar() != 10);
-			if(send(sfd, buf, sizeof(buf), 0) < 0)
-			{   
-				ERR_MSG("send");
-				return -1; 
+			printf("请再一次确认新的密码>>>");
+			scanf("%s",buf1);
+			while(getchar() != 10);
+			if(strcasecmp(buf,buf1) == 0)
+			{
+
+				if(send(sfd, buf, sizeof(buf), 0) < 0)
+				{   
+					ERR_MSG("send");
+					return -1; 
+				}
+				printf("正在向服务器发送更改密码请求....\n");
+			}   
+			else
+			{
+				printf("两次输入密码不一致，修改密码失败!\n");
+				return -1;
 			}
 			
 			//接收数据
@@ -1106,6 +1120,7 @@ int do_change(int sfd)
 			if(strcasecmp(buf,"OK5") == 0)
 			{
 				printf("密码修改成功\n");
+				printf("新密码为:%s,请不要忘记!\n",buf1);
 				return 0;
 			}   
 			bzero(buf,sizeof(buf));
@@ -1120,7 +1135,7 @@ int do_change(int sfd)
 				printf("客户端关闭\n");
 				return 0;
 			}
-			printf("新密码为:%s\n,请不要忘记!",buf);
+			printf("新密码为:%s,请不要忘记\n!",buf1);
 			bzero(buf,sizeof(buf));
 
 			printf("输入任意字符,清屏>>>");
